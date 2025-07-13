@@ -13,6 +13,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
     Route::get('projects',[ProjectController::class, 'index'])->name('projects.index');
+    Route::get('projects/create',[ProjectController::class, 'create'])->name('projects.create');
+    Route::post('projects',[ProjectController::class, 'store'])->name('projects.store');
     Route::delete('projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
 });
 

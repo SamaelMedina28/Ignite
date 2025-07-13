@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, Link } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Eye } from 'lucide-react';
 import {
@@ -35,7 +35,9 @@ export default function Index({ projects }: { projects: Project[] }) {
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Projects" />
       <div className="p-4">
-        <Button variant="secondary">Add Project</Button>
+        <Button variant="secondary" className="p-0">  
+          <Link href={route('projects.create')} prefetch className="h-full py-2 px-4">Add Project</Link>
+        </Button>
       </div>
       <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
         <Table className="text-base">

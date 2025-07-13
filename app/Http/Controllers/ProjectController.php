@@ -14,7 +14,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = Project::all();
+        $projects = Project::orderByDesc('id')->get();
         return Inertia::render('Projects/index', compact('projects'));
     }
 
@@ -23,7 +23,7 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Projects/create');
     }
 
     /**
@@ -31,7 +31,9 @@ class ProjectController extends Controller
      */
     public function store(StoreProjectRequest $request)
     {
-        //
+        $validated = $request->validated();
+        Project::create($validated);
+        return redirect()->route('projects.index');
     }
 
     /**
