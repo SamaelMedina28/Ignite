@@ -12,7 +12,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
-    Route::get('projects',[ProjectController::class, 'index'])->name('projects');
+    Route::get('projects',[ProjectController::class, 'index'])->name('projects.index');
+    Route::delete('projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
 });
 
 require __DIR__.'/settings.php';

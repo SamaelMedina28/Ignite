@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Eye } from 'lucide-react';
 import {
@@ -27,6 +27,10 @@ interface Project {
 }
 
 export default function Index({ projects }: { projects: Project[] }) {
+  const {processing, delete: destroy} = useForm();
+  const handleDelete = (id: number) => {
+    destroy(route('projects.destroy', id));
+  };
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Projects" />
@@ -53,7 +57,7 @@ export default function Index({ projects }: { projects: Project[] }) {
                 <TableCell className="text-right flex gap-2 justify-end">
                   <Button variant="outline"><Eye /></Button>
                   <Button variant="secondary">Edit</Button>
-                  <Button variant="destructive">Delete</Button>
+                  <Button variant="destructive" onClick={() => {handleDelete(project.id)}} disabled={processing}>Delete</Button>
                 </TableCell>
               </TableRow>
             ))}
