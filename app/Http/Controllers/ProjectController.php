@@ -32,7 +32,14 @@ class ProjectController extends Controller
     public function store(StoreProjectRequest $request)
     {
         $validated = $request->validated();
+
+        if ($request->hasFile('image_path')) {
+            $path = $request->file('image_path')->store('projects', 'public');
+            $validated['image_path'] = $path;
+        }
+
         Project::create($validated);
+
         return redirect()->route('projects.index');
     }
 

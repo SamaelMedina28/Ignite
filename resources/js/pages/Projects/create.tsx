@@ -22,18 +22,33 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Create() {
-  const { data, setData, post: store, errors, processing } = useForm({
+  const { data, setData, post: store, errors, processing } = useForm<{
+    name: string;
+    client: string;
+    description: string;
+    review: string;
+    type: string;
+    image_path: File | null; // ✅ aquí se permite File
+  }>({
     name: '',
     client: '',
     description: '',
     review: '',
     type: '',
-    image_path: '',
+    image_path: null,
   });
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setData('image_path', file);
+    }
+  };
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    store(route('projects.store'));
+    store(route('projects.store'),{
+      forceFormData: true,
+    });
   };
 
   return (
@@ -111,12 +126,19 @@ export default function Create() {
 
                 <div className="space-y-2">
                   <Label htmlFor="image_path">Image URL *</Label>
-                  <Input
+                  {/* <Input
                     id="image_path"
                     name="image_path"
                     value={data.image_path}
                     onChange={(e) => setData('image_path', e.target.value)}
                     placeholder="https://example.com/image.jpg"
+                    className={errors.image_path ? 'border-red-500' : ''}
+                  /> */}
+                  <Input
+                    id="image_path"
+                    name="image_path"
+                    type="file"
+                    onChange={handleFileChange}
                     className={errors.image_path ? 'border-red-500' : ''}
                   />
                   {errors.image_path && <InputError message={errors.image_path} />}

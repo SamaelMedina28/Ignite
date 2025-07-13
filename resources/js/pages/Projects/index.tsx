@@ -75,7 +75,7 @@ export default function Index({ projects }: { projects: Project[] }) {
                         <p>{project.client}</p>
                         <h2 className="text-sm bg-blue-500/20 border border-blue-400 text-blue-500 dark:bg-blue-500/20 dark:text-blue-300 px-2 py-1 rounded-full">{project.type[0].toUpperCase() + project.type.slice(1)}</h2>
                       </div>
-                      <img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcg3ZFcL6sAObKAc8xIpvKpk5T-pYqpIbb7w&s' alt="" className="w-full max-h-64 object-cover rounded-lg" />
+                      <img src={`storage/${project.image_path}`} alt="" className="w-full max-h-64 object-cover rounded-lg" />
                       <section className="border border-gray-200 dark:border-zinc-700 p-4 rounded">
                         <p>{project.review ? project.review : 'No review'}</p>
                       </section>
