@@ -3,6 +3,8 @@ import { type BreadcrumbItem } from '@/types';
 import { Head, useForm, Link } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Eye } from 'lucide-react';
+import {Modal} from '@/components/ui/modal';
+import { useState } from 'react';
 import {
   Table,
   TableBody,
@@ -31,6 +33,7 @@ export default function Index({ projects }: { projects: Project[] }) {
   const handleDelete = (id: number) => {
     destroy(route('projects.destroy', id));
   };
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Projects" />
@@ -65,6 +68,43 @@ export default function Index({ projects }: { projects: Project[] }) {
             ))}
           </TableBody>
         </Table>
+      </div>
+      <div>
+        {/* Modal básico */}
+        <Modal
+          trigger={<Button>Open Modal</Button>}
+          title="Modal Title"
+          description="This is a description for the modal"
+        >
+          <p>Your modal content goes here</p>
+        </Modal>
+
+        {/* Modal controlado con acciones personalizadas */}
+        <Modal
+          isOpen={isOpen}
+          onOpenChange={setIsOpen}
+          trigger={<Button>Open Controlled Modal</Button>}
+          title="Confirm Action"
+          size="lg"
+          footer={
+            <div className="flex gap-2 justify-end">
+              <Button variant="outline" onClick={() => setIsOpen(false)}>
+                Cancel
+              </Button>
+              <Button onClick={() => {
+                // Handle action
+                setIsOpen(false);
+              }}>
+                Confirm
+              </Button>
+            </div>
+          }
+        >
+          <div className="space-y-4">
+            <p>Are you sure you want to perform this action?</p>
+            <p>This action cannot be undone.</p>
+          </div>
+        </Modal>
       </div>
     </AppLayout>
   );
