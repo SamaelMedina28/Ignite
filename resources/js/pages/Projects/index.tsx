@@ -3,8 +3,7 @@ import { type BreadcrumbItem } from '@/types';
 import { Head, useForm, Link } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Eye } from 'lucide-react';
-import {Modal} from '@/components/ui/modal';
-import { useState } from 'react';
+import { Modal } from '@/components/ui/modal';
 import {
   Table,
   TableBody,
@@ -22,23 +21,25 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 interface Project {
-    id: number;
-    name: string;
-    client: string;
-    type: string;
+  id: number;
+  name: string;
+  client: string;
+  description: string;
+  review: string;
+  type: string;
+  image_path: string;
 }
 
 export default function Index({ projects }: { projects: Project[] }) {
-  const {processing, delete: destroy} = useForm();
+  const { processing, delete: destroy } = useForm();
   const handleDelete = (id: number) => {
     destroy(route('projects.destroy', id));
   };
-  const [isOpen, setIsOpen] = useState(false);
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Projects" />
       <div className="p-4">
-        <Button variant="secondary" className="p-0">  
+        <Button variant="secondary" className="p-0">
           <Link href={route('projects.create')} prefetch className="h-full py-2 px-4">Add Project</Link>
         </Button>
       </div>
@@ -49,7 +50,7 @@ export default function Index({ projects }: { projects: Project[] }) {
             <TableRow>
               <TableHead>Name</TableHead>
               <TableHead>Client</TableHead>
-            <TableHead>Type</TableHead>
+              <TableHead>Type</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -60,9 +61,25 @@ export default function Index({ projects }: { projects: Project[] }) {
                 <TableCell>{project.client}</TableCell>
                 <TableCell>{project.type}</TableCell>
                 <TableCell className="text-right flex gap-2 justify-end">
-                  <Button variant="outline"><Eye /></Button>
+                  <Modal
+
+                    trigger={<Button variant="outline"><Eye /></Button>}
+                    title={project.name}
+                    description={project.description}
+                  >
+                    <div className="space-y-4">
+                      <div className="flex gap-2 justify-between">
+                        <p>{project.client}</p>
+                        <h2 className="text-sm bg-blue-500/20 text-blue-300 px-2 py-1 rounded-full">{project.type.toUpperCase()}</h2>
+                      </div>
+                      <img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcg3ZFcL6sAObKAc8xIpvKpk5T-pYqpIbb7w&s' alt="" className="w-full max-h-64 object-cover rounded-lg" />
+                      <section className="border border-gray-200 dark:border-zinc-700 p-4 rounded">
+                        <p>{project.review}</p>
+                      </section>
+                    </div>
+                  </Modal>
                   <Button variant="secondary">Edit</Button>
-                  <Button variant="destructive" onClick={() => {handleDelete(project.id)}} disabled={processing}>Delete</Button>
+                  <Button variant="destructive" onClick={() => { handleDelete(project.id) }} disabled={processing}>Delete</Button>
                 </TableCell>
               </TableRow>
             ))}
@@ -70,17 +87,8 @@ export default function Index({ projects }: { projects: Project[] }) {
         </Table>
       </div>
       <div>
-        {/* Modal básico */}
-        <Modal
-          trigger={<Button>Open Modal</Button>}
-          title="Modal Title"
-          description="This is a description for the modal"
-        >
-          <p>Your modal content goes here</p>
-        </Modal>
-
         {/* Modal controlado con acciones personalizadas */}
-        <Modal
+        {/* <Modal
           isOpen={isOpen}
           onOpenChange={setIsOpen}
           trigger={<Button>Open Controlled Modal</Button>}
@@ -104,7 +112,7 @@ export default function Index({ projects }: { projects: Project[] }) {
             <p>Are you sure you want to perform this action?</p>
             <p>This action cannot be undone.</p>
           </div>
-        </Modal>
+        </Modal> */}
       </div>
     </AppLayout>
   );
