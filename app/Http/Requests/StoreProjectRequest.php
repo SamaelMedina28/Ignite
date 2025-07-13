@@ -27,7 +27,8 @@ class StoreProjectRequest extends FormRequest
             'description' => 'required|min:5',
             'review' => 'nullable|string',
             'type' => 'required|in:branding,rebranding',
-            'image_path' => 'required',
+            'image_path' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
+
         ];
     }
     public function messages(): array
@@ -41,6 +42,9 @@ class StoreProjectRequest extends FormRequest
             'type.required' => 'The type field is required.',
             'type.in' => 'The type must be branding or rebranding.',
             'image_path.required' => 'The image path field is required.',
+            'image_path.image' => 'The image path must be an image.',
+            'image_path.mimes' => 'The image path must be a valid image format.',
+            'image_path.max' => 'The image path must be less than 10 MB.',
         ];
     }
 }

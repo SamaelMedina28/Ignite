@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
+import { useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
@@ -20,6 +21,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     href: '/projects/create',
   },
 ];
+
 
 export default function Create() {
   const { data, setData, post: store, errors, processing } = useForm<{
@@ -38,10 +40,13 @@ export default function Create() {
     image_path: null,
   });
 
+  const [preview, setPreview] = useState<string | null>(null);
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       setData('image_path', file);
+      setPreview(URL.createObjectURL(file));
     }
   };
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -126,14 +131,6 @@ export default function Create() {
 
                 <div className="space-y-2">
                   <Label htmlFor="image_path">Image URL *</Label>
-                  {/* <Input
-                    id="image_path"
-                    name="image_path"
-                    value={data.image_path}
-                    onChange={(e) => setData('image_path', e.target.value)}
-                    placeholder="https://example.com/image.jpg"
-                    className={errors.image_path ? 'border-red-500' : ''}
-                  /> */}
                   <Input
                     id="image_path"
                     name="image_path"
@@ -141,6 +138,7 @@ export default function Create() {
                     onChange={handleFileChange}
                     className={errors.image_path ? 'border-red-500' : ''}
                   />
+                  {preview && <img src={preview} alt="Preview" className="max-w-64 max-h-64 object-cover rounded-lg" />}
                   {errors.image_path && <InputError message={errors.image_path} />}
                 </div>
 
