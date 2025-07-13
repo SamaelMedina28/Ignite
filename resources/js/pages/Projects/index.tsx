@@ -20,7 +20,7 @@ const breadcrumbs: BreadcrumbItem[] = [
   },
 ];
 
-interface Project {
+export interface Project {
   id: number;
   name: string;
   client: string;
@@ -31,9 +31,12 @@ interface Project {
 }
 
 export default function Index({ projects }: { projects: Project[] }) {
-  const { processing, delete: destroy } = useForm();
+  const { processing, delete: destroy, get: edit } = useForm();
   const handleDelete = (id: number) => {
     destroy(route('projects.destroy', id));
+  };
+  const handleEdit = (id: number) => {
+    edit(route('projects.edit', id));
   };
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
@@ -59,7 +62,7 @@ export default function Index({ projects }: { projects: Project[] }) {
               <TableRow key={project.id}>
                 <TableCell className="font-medium">{project.name}</TableCell>
                 <TableCell>{project.client}</TableCell>
-                <TableCell>{project.type}</TableCell>
+                <TableCell>{project.type[0].toUpperCase() + project.type.slice(1)}</TableCell>
                 <TableCell className="text-right flex gap-2 justify-end">
                   <Modal
 
@@ -74,11 +77,11 @@ export default function Index({ projects }: { projects: Project[] }) {
                       </div>
                       <img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcg3ZFcL6sAObKAc8xIpvKpk5T-pYqpIbb7w&s' alt="" className="w-full max-h-64 object-cover rounded-lg" />
                       <section className="border border-gray-200 dark:border-zinc-700 p-4 rounded">
-                        <p>{project.review}</p>
+                        <p>{project.review ? project.review : 'No review'}</p>
                       </section>
                     </div>
                   </Modal>
-                  <Button variant="secondary">Edit</Button>
+                  <Button variant="secondary" onClick={() => { handleEdit(project.id) }} disabled={processing}>Edit</Button>
                   <Button variant="destructive" onClick={() => { handleDelete(project.id) }} disabled={processing}>Delete</Button>
                 </TableCell>
               </TableRow>

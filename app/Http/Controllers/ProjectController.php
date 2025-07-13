@@ -49,7 +49,7 @@ class ProjectController extends Controller
      */
     public function edit(Project $project)
     {
-        //
+        return Inertia::render('Projects/edit', compact('project'));
     }
 
     /**
@@ -57,7 +57,9 @@ class ProjectController extends Controller
      */
     public function update(UpdateProjectRequest $request, Project $project)
     {
-        //
+        $validated = $request->validated();
+        $project->update($validated);
+        return redirect()->route('projects.index');
     }
 
     /**
