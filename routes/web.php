@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\ProjectController;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -11,9 +12,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
-    Route::get('projects', function () {
-        return Inertia::render('Projects/index');
-    })->name('projects');
+    Route::get('projects',[ProjectController::class, 'index'])->name('projects');
 });
 
 require __DIR__.'/settings.php';

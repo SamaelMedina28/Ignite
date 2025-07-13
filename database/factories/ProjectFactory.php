@@ -18,7 +18,7 @@ class ProjectFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'cliente' => fake()->name(),
+            'client' => fake()->name(),
             'description' => fake()->text(),
             'review' => fake()->text(),
             'type' => fake()->randomElement(['branding', 'rebranding']),

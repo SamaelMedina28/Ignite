@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('cliente');
+            $table->string('client');
             $table->text('description');
             $table->string('review')->nullable();
             $table->enum('type', ['branding', 'rebranding'])->default('branding');
