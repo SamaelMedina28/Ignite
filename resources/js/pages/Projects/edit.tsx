@@ -29,7 +29,7 @@ interface Props {
 
 export default function Edit({ project }: Props) {
   // Formulario con tipado correcto para archivos
-  const { data, setData, post, errors, processing } = useForm<{
+  const { data, setData, post: update, errors, processing } = useForm<{
     _method: string;
     name: string;
     client: string;
@@ -75,7 +75,7 @@ export default function Edit({ project }: Props) {
     e.preventDefault();
 
     // Usar post con _method PUT para manejar archivos correctamente
-    post(route('projects.update', project.id), {
+    update(route('projects.update', project.id), {
       forceFormData: true, // Forzar FormData para archivos
       preserveScroll: true,
       onSuccess: () => {
@@ -180,8 +180,9 @@ export default function Edit({ project }: Props) {
                     name="image_path"
                     accept="image/*"
                     onChange={handleFileChange}
-                    className={errors.image_path ? 'border-red-500' : ''}
+                    className={`border ${errors.image_path ? 'border-red-500' : ''}`}
                   />
+                  
 
                   {/* Mostrar imagen actual o preview */}
                   {(preview || currentImage) && (
@@ -189,7 +190,7 @@ export default function Edit({ project }: Props) {
                       <img
                         src={preview || currentImage || ''}
                         alt="Project preview"
-                        className="w-full max-h-64 object-cover rounded-lg border"
+                        className="max-w-64 max-h-64 object-cover rounded-lg"
                       />
                       {preview && (
                         <p className="text-sm text-gray-600 mt-1">

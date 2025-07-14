@@ -131,6 +131,7 @@ export default function Create() {
                   <Label htmlFor="image_path">Image URL *</Label>
                   <Input
                     id="image_path"
+                    accept="image/*"
                     name="image_path"
                     type="file"
                     onChange={handleFileChange}
