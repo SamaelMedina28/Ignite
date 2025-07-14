@@ -2,8 +2,9 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, useForm, Link } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
-import { Eye } from 'lucide-react';
+import { Eye, Search } from 'lucide-react';
 import { Modal } from '@/components/ui/modal';
+import { Input } from '@/components/ui/input';
 import {
   Table,
   TableBody,
@@ -13,6 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { useState } from 'react';
 const breadcrumbs: BreadcrumbItem[] = [
   {
     title: 'Projects',
@@ -31,6 +33,8 @@ export interface Project {
 }
 
 export default function Index({ projects }: { projects: Project[] }) {
+  const [search, setSearch] = useState('');
+  console.log("Hola me estoy renderizando");
   const { processing, delete: destroy, get: edit } = useForm();
   const handleDelete = (id: number) => {
     destroy(route('projects.destroy', id));
@@ -46,7 +50,19 @@ export default function Index({ projects }: { projects: Project[] }) {
           <Link href={route('projects.create')} prefetch className="h-full py-2 px-4">Add Project</Link>
         </Button>
       </div>
-      <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
+      <main className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
+        <div className="relative w-full max-w-md">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <Search className="h-5 w-5 text-gray-400" />
+          </div>
+          <Input
+            type="text"
+            placeholder="Search projects..."
+            className="pl-10"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
         <Table className="text-base">
           <TableCaption>Projects List</TableCaption>
           <TableHeader>
@@ -58,7 +74,7 @@ export default function Index({ projects }: { projects: Project[] }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {projects.map((project) => (
+            {projects.filter((project) => project.name.toLowerCase().includes(search.toLowerCase())).map((project) => (
               <TableRow key={project.id}>
                 <TableCell className="font-medium">{project.name}</TableCell>
                 <TableCell>{project.client}</TableCell>
@@ -88,35 +104,8 @@ export default function Index({ projects }: { projects: Project[] }) {
             ))}
           </TableBody>
         </Table>
-      </div>
-      <div>
-        {/* Modal controlado con acciones personalizadas */}
-        {/* <Modal
-          isOpen={isOpen}
-          onOpenChange={setIsOpen}
-          trigger={<Button>Open Controlled Modal</Button>}
-          title="Confirm Action"
-          size="lg"
-          footer={
-            <div className="flex gap-2 justify-end">
-              <Button variant="outline" onClick={() => setIsOpen(false)}>
-                Cancel
-              </Button>
-              <Button onClick={() => {
-                // Handle action
-                setIsOpen(false);
-              }}>
-                Confirm
-              </Button>
-            </div>
-          }
-        >
-          <div className="space-y-4">
-            <p>Are you sure you want to perform this action?</p>
-            <p>This action cannot be undone.</p>
-          </div>
-        </Modal> */}
-      </div>
+      </main>
+
     </AppLayout>
   );
 }
