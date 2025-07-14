@@ -25,9 +25,9 @@ export interface Project {
   name: string;
   client: string;
   description: string;
-  review: string;
+  review: string | null;
   type: string;
-  image_path: string;
+  image_path: string | File;
 }
 
 export default function Index({ projects }: { projects: Project[] }) {

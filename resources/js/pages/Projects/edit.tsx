@@ -10,6 +10,7 @@ import { Project } from '@/pages/Projects/index';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
+import { useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
@@ -28,18 +29,30 @@ interface Props {
 
 export default function Edit({ project }: Props) {
   const { data, setData, put: update, errors, processing } = useForm({
-    name: project.name,
-    client: project.client,
-    description: project.description,
-    review: project.review,
-    type: project.type,
-    image_path: project.image_path,
+    _method: 'PUT',
+    name: project.name || '',
+    client: project.client || '',
+    description: project.description || '',
+    review: project.review || '',
+    type: project.type || '',
+    image_path: project.image_path || '',
   });
+
+  const [preview, setPreview] = useState<string | null>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setData('image_path', file);
+      setPreview(URL.createObjectURL(file));
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     update(route('projects.update', project.id));
   };
+  const image = data.image_path ? '/storage/' + data.image_path : '/storage/' + project.image_path;
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
@@ -116,14 +129,16 @@ export default function Edit({ project }: Props) {
 
                 <div className="space-y-2">
                   <Label htmlFor="image_path">Image URL *</Label>
-                  <Input
+                  <input
+                    type="file"
                     id="image_path"
                     name="image_path"
-                    value={data.image_path}
-                    onChange={(e) => setData('image_path', e.target.value)}
+                    // value={data.image_path}
+                    onChange={handleFileChange}
                     placeholder="https://example.com/image.jpg"
                     className={errors.image_path ? 'border-red-500' : ''}
                   />
+                  <img src={preview || image} alt="" className="w-full max-h-64 object-cover rounded-lg" />
                   {errors.image_path && <InputError message={errors.image_path} />}
                 </div>
 

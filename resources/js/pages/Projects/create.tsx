@@ -51,9 +51,7 @@ export default function Create() {
   };
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    store(route('projects.store'),{
-      forceFormData: true,
-    });
+    store(route('projects.store'));
   };
 
   return (
