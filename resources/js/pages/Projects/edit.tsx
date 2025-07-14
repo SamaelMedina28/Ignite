@@ -43,7 +43,9 @@ export default function Edit({ project }: Props) {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setData('image_path', file);
+      console.log(file);
+      // setData('image_path', file);
+      console.log(data.image_path);
       setPreview(URL.createObjectURL(file));
     }
   };
@@ -52,7 +54,7 @@ export default function Edit({ project }: Props) {
     e.preventDefault();
     update(route('projects.update', project.id));
   };
-  const image = data.image_path ? '/storage/' + data.image_path : '/storage/' + project.image_path;
+
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
@@ -138,7 +140,7 @@ export default function Edit({ project }: Props) {
                     placeholder="https://example.com/image.jpg"
                     className={errors.image_path ? 'border-red-500' : ''}
                   />
-                  <img src={preview || image} alt="" className="w-full max-h-64 object-cover rounded-lg" />
+                  <img src={preview || '/storage/' + data.image_path} alt="" className="w-full max-h-64 object-cover rounded-lg" />
                   {errors.image_path && <InputError message={errors.image_path} />}
                 </div>
 
