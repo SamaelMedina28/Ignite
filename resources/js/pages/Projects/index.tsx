@@ -46,6 +46,7 @@ export interface Project {
 export default function Index({ projects }: { projects: ProjectWithLinks }) {
   // const [search, setSearch] = useState('');
   console.log(projects);
+  console.log(projects.links.length);
   const { processing, delete: destroy, get: edit } = useForm();
   const handleDelete = (id: number) => {
     destroy(route('projects.destroy', id));
@@ -118,7 +119,11 @@ export default function Index({ projects }: { projects: ProjectWithLinks }) {
             )))}
           </TableBody>
         </Table>
-        <Pagination links={projects.links} />
+        {projects.links.length > 3 && (
+          <div className="flex justify-end">
+            <Pagination links={projects.links} />
+          </div>
+        )}
       </main>
 
     </AppLayout>
