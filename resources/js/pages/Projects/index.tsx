@@ -13,8 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { useState } from 'react';
-import {SearchInput} from '@/components/ui/search-input';
+// import {SearchInput} from '@/components/ui/search-input';
 import { Pagination } from '@/components/ui/pagination';
 const breadcrumbs: BreadcrumbItem[] = [
   {
@@ -45,7 +44,7 @@ export interface Project {
 }
 
 export default function Index({ projects }: { projects: ProjectWithLinks }) {
-  const [search, setSearch] = useState('');
+  // const [search, setSearch] = useState('');
   console.log(projects);
   const { processing, delete: destroy, get: edit } = useForm();
   const handleDelete = (id: number) => {
@@ -55,9 +54,9 @@ export default function Index({ projects }: { projects: ProjectWithLinks }) {
     edit(route('projects.edit', id));
   };
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
-  };
+  // const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setSearch(e.target.value);
+  // };
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
@@ -69,7 +68,7 @@ export default function Index({ projects }: { projects: ProjectWithLinks }) {
       </div>
       <main className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
         <div className="relative w-full max-w-md">
-          <SearchInput search={search} handleSearch={handleSearch} />
+          {/* <SearchInput search={search} handleSearch={handleSearch} /> */}
         </div>
         <Table className="text-base">
           <TableCaption>Projects List</TableCaption>
@@ -82,14 +81,14 @@ export default function Index({ projects }: { projects: ProjectWithLinks }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {projects.data.filter((project) => project.name.toLowerCase().includes(search.toLowerCase())).length === 0 ? (
+            {projects.data.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={4} className="h-24 text-center">
                   No projects found.
                 </TableCell>
               </TableRow>
             ) : (
-              projects.data.filter((project) => project.name.toLowerCase().includes(search.toLowerCase())).map((project) => (
+              projects.data.map((project) => (
                 <TableRow key={project.id}>
                   <TableCell className="font-medium">{project.name}</TableCell>
                   <TableCell>{project.client}</TableCell>
