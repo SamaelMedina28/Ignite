@@ -2,9 +2,8 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, useForm, Link } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
-import { Eye, Search } from 'lucide-react';
+import { Eye } from 'lucide-react';
 import { Modal } from '@/components/ui/modal';
-import { Input } from '@/components/ui/input';
 import {
   Table,
   TableBody,
@@ -15,12 +14,16 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { useState } from 'react';
+import {SearchInput} from '@/components/ui/search-input';
 const breadcrumbs: BreadcrumbItem[] = [
   {
     title: 'Projects',
     href: '/projects',
   },
 ];
+
+
+
 
 export interface Project {
   id: number;
@@ -42,6 +45,11 @@ export default function Index({ projects }: { projects: Project[] }) {
   const handleEdit = (id: number) => {
     edit(route('projects.edit', id));
   };
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+  };
+
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Projects" />
@@ -52,16 +60,7 @@ export default function Index({ projects }: { projects: Project[] }) {
       </div>
       <main className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
         <div className="relative w-full max-w-md">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <Search className="h-5 w-5 text-gray-400" />
-          </div>
-          <Input
-            type="text"
-            placeholder="Search projects..."
-            className="pl-10"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
+          <SearchInput search={search} handleSearch={handleSearch} />
         </div>
         <Table className="text-base">
           <TableCaption>Projects List</TableCaption>
@@ -74,11 +73,18 @@ export default function Index({ projects }: { projects: Project[] }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {projects.filter((project) => project.name.toLowerCase().includes(search.toLowerCase())).map((project) => (
-              <TableRow key={project.id}>
-                <TableCell className="font-medium">{project.name}</TableCell>
-                <TableCell>{project.client}</TableCell>
-                <TableCell>{project.type[0].toUpperCase() + project.type.slice(1)}</TableCell>
+            {projects.filter((project) => project.name.toLowerCase().includes(search.toLowerCase())).length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={4} className="h-24 text-center">
+                  No projects found.
+                </TableCell>
+              </TableRow>
+            ) : (
+              projects.filter((project) => project.name.toLowerCase().includes(search.toLowerCase())).map((project) => (
+                <TableRow key={project.id}>
+                  <TableCell className="font-medium">{project.name}</TableCell>
+                  <TableCell>{project.client}</TableCell>
+                  <TableCell>{project.type[0].toUpperCase() + project.type.slice(1)}</TableCell>
                 <TableCell className="text-right flex gap-2 justify-end">
                   <Modal
 
@@ -101,7 +107,7 @@ export default function Index({ projects }: { projects: Project[] }) {
                   <Button variant="destructive" onClick={() => { handleDelete(project.id) }} disabled={processing}>Delete</Button>
                 </TableCell>
               </TableRow>
-            ))}
+            )))}
           </TableBody>
         </Table>
       </main>
