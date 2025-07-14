@@ -15,7 +15,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = Project::orderByDesc('id')->get();
+        $projects = Project::orderByDesc('id')->paginate(5);
         return Inertia::render('Projects/index', compact('projects'));
     }
 

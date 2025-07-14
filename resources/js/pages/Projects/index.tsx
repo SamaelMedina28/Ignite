@@ -2,7 +2,7 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, useForm, Link } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
-import { Eye } from 'lucide-react';
+import { Eye} from 'lucide-react';
 import { Modal } from '@/components/ui/modal';
 import {
   Table,
@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/table"
 import { useState } from 'react';
 import {SearchInput} from '@/components/ui/search-input';
+import { Pagination } from '@/components/ui/pagination';
 const breadcrumbs: BreadcrumbItem[] = [
   {
     title: 'Projects',
@@ -22,8 +23,16 @@ const breadcrumbs: BreadcrumbItem[] = [
   },
 ];
 
+interface PaginationLink {
+  url: string | null;
+  label: string;
+  active: boolean;
+}
 
-
+interface ProjectWithLinks {
+  data: Project[];
+  links: PaginationLink[];
+}
 
 export interface Project {
   id: number;
@@ -35,9 +44,9 @@ export interface Project {
   image_path: string | File;
 }
 
-export default function Index({ projects }: { projects: Project[] }) {
+export default function Index({ projects }: { projects: ProjectWithLinks }) {
   const [search, setSearch] = useState('');
-  console.log("Hola me estoy renderizando");
+  console.log(projects);
   const { processing, delete: destroy, get: edit } = useForm();
   const handleDelete = (id: number) => {
     destroy(route('projects.destroy', id));
@@ -73,14 +82,14 @@ export default function Index({ projects }: { projects: Project[] }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {projects.filter((project) => project.name.toLowerCase().includes(search.toLowerCase())).length === 0 ? (
+            {projects.data.filter((project) => project.name.toLowerCase().includes(search.toLowerCase())).length === 0 ? (
               <TableRow>
                 <TableCell colSpan={4} className="h-24 text-center">
                   No projects found.
                 </TableCell>
               </TableRow>
             ) : (
-              projects.filter((project) => project.name.toLowerCase().includes(search.toLowerCase())).map((project) => (
+              projects.data.filter((project) => project.name.toLowerCase().includes(search.toLowerCase())).map((project) => (
                 <TableRow key={project.id}>
                   <TableCell className="font-medium">{project.name}</TableCell>
                   <TableCell>{project.client}</TableCell>
@@ -110,6 +119,7 @@ export default function Index({ projects }: { projects: Project[] }) {
             )))}
           </TableBody>
         </Table>
+        <Pagination links={projects.links} />
       </main>
 
     </AppLayout>
