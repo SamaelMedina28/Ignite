@@ -27,7 +27,7 @@ class UpdateProjectRequest extends FormRequest
             'description' => 'required|min:5',
             'review' => 'nullable|string',
             'type' => 'required|in:branding,rebranding',
-            'image_path' => 'required',
+            'image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }
     public function messages(): array

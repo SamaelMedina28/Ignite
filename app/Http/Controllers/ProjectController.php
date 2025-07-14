@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Project;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class ProjectController extends Controller
@@ -64,10 +65,26 @@ class ProjectController extends Controller
      */
     public function update(UpdateProjectRequest $request, Project $project)
     {
-        // dd($request->all());
         $validated = $request->validated();
+
+        // Manejar la imagen si se subió una nueva
+        if ($request->hasFile('image_path')) {
+            // Eliminar la imagen anterior si existe
+            if ($project->image_path && Storage::disk('public')->exists($project->image_path)) {
+                Storage::disk('public')->delete($project->image_path);
+            }
+
+            // Guardar la nueva imagen
+            $path = $request->file('image_path')->store('projects', 'public');
+            $validated['image_path'] = $path;
+        } else {
+            // Si no se subió nueva imagen, mantener la actual
+            unset($validated['image_path']);
+        }
+
         $project->update($validated);
-        return redirect()->route('projects.index');
+
+        return redirect()->route('projects.index')->with('success', 'Project updated successfully!');
     }
 
     /**

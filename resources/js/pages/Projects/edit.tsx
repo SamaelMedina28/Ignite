@@ -10,7 +10,7 @@ import { Project } from '@/pages/Projects/index';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
@@ -28,33 +28,76 @@ interface Props {
 }
 
 export default function Edit({ project }: Props) {
-  const { data, setData, put: update, errors, processing } = useForm({
+  // Formulario con tipado correcto para archivos
+  const { data, setData, post, errors, processing } = useForm<{
+    _method: string;
+    name: string;
+    client: string;
+    description: string;
+    review: string;
+    type: string;
+    image_path: File | null;
+  }>({
     _method: 'PUT',
     name: project.name || '',
     client: project.client || '',
     description: project.description || '',
     review: project.review || '',
     type: project.type || '',
-    image_path: project.image_path || '',
+    image_path: null, // Siempre null inicialmente para archivos
   });
 
   const [preview, setPreview] = useState<string | null>(null);
+  const [currentImage, setCurrentImage] = useState<string | null>(null);
+
+  // Establecer imagen actual al cargar
+  useEffect(() => {
+    if (project.image_path && typeof project.image_path === 'string') {
+      setCurrentImage(`/storage/${project.image_path}`);
+    }
+  }, [project.image_path]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      console.log(file);
-      // setData('image_path', file);
-      console.log(data.image_path);
-      setPreview(URL.createObjectURL(file));
+      setData('image_path', file);
+
+      // Crear preview
+      const previewUrl = URL.createObjectURL(file);
+      setPreview(previewUrl);
+
+      // Limpiar URL anterior para evitar memory leaks
+      return () => URL.revokeObjectURL(previewUrl);
     }
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    update(route('projects.update', project.id));
+
+    // Usar post con _method PUT para manejar archivos correctamente
+    post(route('projects.update', project.id), {
+      forceFormData: true, // Forzar FormData para archivos
+      preserveScroll: true,
+      onSuccess: () => {
+        // Limpiar preview si existe
+        if (preview) {
+          URL.revokeObjectURL(preview);
+        }
+      },
+      onError: (errors) => {
+        console.error('Validation errors:', errors);
+      }
+    });
   };
 
+  // Limpiar URLs al desmontar el componente
+  useEffect(() => {
+    return () => {
+      if (preview) {
+        URL.revokeObjectURL(preview);
+      }
+    };
+  }, [preview]);
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
@@ -67,7 +110,7 @@ export default function Edit({ project }: Props) {
         <Card className="mx-4">
           <CardHeader>
             <CardTitle>Project Details</CardTitle>
-            <CardDescription>Fill in the required information to create a new project</CardDescription>
+            <CardDescription>Edit the project information</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -130,17 +173,32 @@ export default function Edit({ project }: Props) {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="image_path">Image URL *</Label>
-                  <input
+                  <Label htmlFor="image_path">Project Image</Label>
+                  <Input
                     type="file"
                     id="image_path"
                     name="image_path"
-                    // value={data.image_path}
+                    accept="image/*"
                     onChange={handleFileChange}
-                    placeholder="https://example.com/image.jpg"
                     className={errors.image_path ? 'border-red-500' : ''}
                   />
-                  <img src={preview || '/storage/' + data.image_path} alt="" className="w-full max-h-64 object-cover rounded-lg" />
+
+                  {/* Mostrar imagen actual o preview */}
+                  {(preview || currentImage) && (
+                    <div className="mt-2">
+                      <img
+                        src={preview || currentImage || ''}
+                        alt="Project preview"
+                        className="w-full max-h-64 object-cover rounded-lg border"
+                      />
+                      {preview && (
+                        <p className="text-sm text-gray-600 mt-1">
+                          New image selected (not saved yet)
+                        </p>
+                      )}
+                    </div>
+                  )}
+
                   {errors.image_path && <InputError message={errors.image_path} />}
                 </div>
 
