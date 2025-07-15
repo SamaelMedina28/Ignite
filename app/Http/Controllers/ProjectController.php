@@ -6,6 +6,7 @@ use App\Models\Project;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class ProjectController extends Controller
@@ -13,10 +14,23 @@ class ProjectController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $projects = Project::orderByDesc('id')->paginate(8);
-        return Inertia::render('Projects/index', compact('projects'));
+        $search = $request->get('search', '');
+
+        $projects = Project::query()
+            ->when($search, function ($query, $search) {
+                return $query->where('name', 'like', "%{$search}%")
+                    ->orWhere('client', 'like', "%{$search}%")
+                    ->orWhere('type', 'like', "%{$search}%");
+            })
+            ->paginate(7)
+            ->withQueryString(); // Mantiene los parámetros de búsqueda en la paginación
+
+        return inertia('Projects/index', [
+            'projects' => $projects,
+            'search' => $search
+        ]);
     }
 
     /**

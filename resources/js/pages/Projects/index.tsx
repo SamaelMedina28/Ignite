@@ -1,9 +1,10 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head, useForm, Link } from '@inertiajs/react';
+import { Head, useForm, Link, router } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
-import { Eye} from 'lucide-react';
+import { Eye } from 'lucide-react';
 import { Modal } from '@/components/ui/modal';
+import { useState, useRef } from 'react';
 import {
   Table,
   TableBody,
@@ -13,7 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-// import {SearchInput} from '@/components/ui/search-input';
+import { SearchInput } from '@/components/ui/search-input';
 import { Pagination } from '@/components/ui/pagination';
 const breadcrumbs: BreadcrumbItem[] = [
   {
@@ -43,11 +44,16 @@ export interface Project {
   image_path: string | File;
 }
 
-export default function Index({ projects }: { projects: ProjectWithLinks }) {
-  // const [search, setSearch] = useState('');
-  console.log(projects);
-  console.log(projects.links.length);
+export default function Index({ projects, search: initialSearch }: {
+  projects: ProjectWithLinks,
+  search: string 
+}) {
   const { processing, delete: destroy, get: edit } = useForm();
+
+  const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const [search, setSearch] = useState<string>(initialSearch || '');
+
   const handleDelete = (id: number) => {
     destroy(route('projects.destroy', id));
   };
@@ -55,9 +61,24 @@ export default function Index({ projects }: { projects: ProjectWithLinks }) {
     edit(route('projects.edit', id));
   };
 
-  // const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   setSearch(e.target.value);
-  // };
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearch(value);
+
+    // Debounce para evitar muchas request
+    if (debounceTimeoutRef.current) {
+      clearTimeout(debounceTimeoutRef.current);
+    }
+
+    // Establece un nuevo timer
+    debounceTimeoutRef.current = setTimeout(() => {
+      console.log('Realizando petición al servidor con:', value); // Para depuración
+      router.get(route('projects.index'), { search: value }, {
+        preserveState: true,
+        preserveScroll: true
+      });
+    }, 300); 
+  };
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
@@ -69,7 +90,7 @@ export default function Index({ projects }: { projects: ProjectWithLinks }) {
       </div>
       <main className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
         <div className="relative w-full max-w-md">
-          {/* <SearchInput search={search} handleSearch={handleSearch} /> */}
+          <SearchInput search={search} handleSearch={handleSearch} />
         </div>
         <Table className="text-base">
           <TableCaption>Projects List</TableCaption>
@@ -94,29 +115,29 @@ export default function Index({ projects }: { projects: ProjectWithLinks }) {
                   <TableCell className="font-medium">{project.name}</TableCell>
                   <TableCell>{project.client}</TableCell>
                   <TableCell>{project.type[0].toUpperCase() + project.type.slice(1)}</TableCell>
-                <TableCell className="text-right flex gap-2 justify-end">
-                  <Modal
+                  <TableCell className="text-right flex gap-2 justify-end">
+                    <Modal
 
-                    trigger={<Button variant="outline"><Eye /></Button>}
-                    title={project.name}
-                    description={project.description}
-                  >
-                    <div className="space-y-4">
-                      <div className="flex gap-2 justify-between items-center">
-                        <p>{project.client}</p>
-                        <h2 className="text-sm bg-blue-500/20 border border-blue-400 text-blue-500 dark:bg-blue-500/20 dark:text-blue-300 px-2 py-1 rounded-full">{project.type[0].toUpperCase() + project.type.slice(1)}</h2>
+                      trigger={<Button variant="outline"><Eye /></Button>}
+                      title={project.name}
+                      description={project.description}
+                    >
+                      <div className="space-y-4">
+                        <div className="flex gap-2 justify-between items-center">
+                          <p>{project.client}</p>
+                          <h2 className="text-sm bg-blue-500/20 border border-blue-400 text-blue-500 dark:bg-blue-500/20 dark:text-blue-300 px-2 py-1 rounded-full">{project.type[0].toUpperCase() + project.type.slice(1)}</h2>
+                        </div>
+                        <img src={`storage/${project.image_path}`} alt="" className="w-full max-h-64 object-cover rounded-lg" />
+                        <section className="border border-gray-200 dark:border-zinc-700 p-4 rounded">
+                          <p>{project.review ? project.review : 'No review'}</p>
+                        </section>
                       </div>
-                      <img src={`storage/${project.image_path}`} alt="" className="w-full max-h-64 object-cover rounded-lg" />
-                      <section className="border border-gray-200 dark:border-zinc-700 p-4 rounded">
-                        <p>{project.review ? project.review : 'No review'}</p>
-                      </section>
-                    </div>
-                  </Modal>
-                  <Button variant="secondary" onClick={() => { handleEdit(project.id) }} disabled={processing}>Edit</Button>
-                  <Button variant="destructive" onClick={() => { handleDelete(project.id) }} disabled={processing}>Delete</Button>
-                </TableCell>
-              </TableRow>
-            )))}
+                    </Modal>
+                    <Button variant="secondary" onClick={() => { handleEdit(project.id) }} disabled={processing}>Edit</Button>
+                    <Button variant="destructive" onClick={() => { handleDelete(project.id) }} disabled={processing}>Delete</Button>
+                  </TableCell>
+                </TableRow>
+              )))}
           </TableBody>
         </Table>
         {projects.links.length > 3 && (
