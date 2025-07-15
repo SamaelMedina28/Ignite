@@ -10,6 +10,8 @@ interface ModalProps {
   children: React.ReactNode;
   footer?: React.ReactNode;
   isOpen?: boolean;
+  isDeleteModal?: boolean;
+  handleDelete?: () => void;
   onOpenChange?: (open: boolean) => void;
   size?: 'sm' | 'md' | 'lg' | 'xl';
 }
@@ -21,6 +23,8 @@ export function Modal({
   children,
   footer,
   isOpen,
+  isDeleteModal,
+  handleDelete,
   onOpenChange,
   size = 'md'
 }: ModalProps) {
@@ -60,12 +64,27 @@ export function Modal({
             {footer}
           </DialogFooter>
         ) : (
-          <DialogFooter className="sm:justify-start">
-            <DialogClose asChild>
-              <Button type="button" variant="outline">
-                Close
-              </Button>
-            </DialogClose>
+          <DialogFooter className={isDeleteModal ? 'sm:justify-end' : 'sm:justify-start'}>
+            {isDeleteModal ? (
+              <>
+                <div className="flex gap-2 sm:justify-center">
+                  <DialogClose asChild>
+                    <Button type="button" variant="outline">
+                      Close
+                    </Button>
+                  </DialogClose>
+                  <Button type="button" variant="destructive" onClick={handleDelete}>
+                    Delete
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <DialogClose asChild>
+                <Button type="button" variant="outline">
+                  Close
+                </Button>
+              </DialogClose>
+            )}
           </DialogFooter>
         )}
       </DialogContent>

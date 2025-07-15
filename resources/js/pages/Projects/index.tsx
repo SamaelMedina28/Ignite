@@ -2,7 +2,7 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, useForm, Link, router } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
-import { Eye } from 'lucide-react';
+import { Eye, Trash } from 'lucide-react';
 import { Modal } from '@/components/ui/modal';
 import { useState, useRef } from 'react';
 import {
@@ -46,7 +46,7 @@ export interface Project {
 
 export default function Index({ projects, search: initialSearch }: {
   projects: ProjectWithLinks,
-  search: string 
+  search: string
 }) {
   const { processing, delete: destroy, get: edit } = useForm();
 
@@ -77,7 +77,7 @@ export default function Index({ projects, search: initialSearch }: {
         preserveState: true,
         preserveScroll: true
       });
-    }, 300); 
+    }, 300);
   };
 
   const handleClear = () => {
@@ -88,6 +88,8 @@ export default function Index({ projects, search: initialSearch }: {
       preserveScroll: true
     });
   };
+
+  const [modal, setModal] = useState(false);
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
@@ -126,7 +128,6 @@ export default function Index({ projects, search: initialSearch }: {
                   <TableCell>{project.type[0].toUpperCase() + project.type.slice(1)}</TableCell>
                   <TableCell className="text-right flex gap-2 justify-end">
                     <Modal
-
                       trigger={<Button variant="outline"><Eye /></Button>}
                       title={project.name}
                       description={project.description}
@@ -143,7 +144,21 @@ export default function Index({ projects, search: initialSearch }: {
                       </div>
                     </Modal>
                     <Button variant="secondary" onClick={() => { handleEdit(project.id) }} disabled={processing}>Edit</Button>
-                    <Button variant="destructive" onClick={() => { handleDelete(project.id) }} disabled={processing}>Delete</Button>
+                    <Modal
+                      isDeleteModal={true}
+                      handleDelete={() => { handleDelete(project.id) }}
+                      trigger={<Button variant="destructive"><Trash /></Button>}
+                      title="Delete Project"
+                      description="Are you sure you want to delete this project?"
+                    >
+                      <div>
+                        <div className="flex gap-2 justify-between items-center">
+                          <h2 className="text-sm px-2 py-1">{project.name}</h2>
+                          <p className="text-sm text-gray-500 px-2 py-1">{project.client}</p>
+                        </div>
+                        <img src={`storage/${project.image_path}`} alt="" className="w-full h-32 object-cover rounded" />
+                      </div>
+                    </Modal>
                   </TableCell>
                 </TableRow>
               )))}
