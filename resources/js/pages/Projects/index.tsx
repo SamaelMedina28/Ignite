@@ -89,8 +89,6 @@ export default function Index({ projects, search: initialSearch }: {
     });
   };
 
-  const [modal, setModal] = useState(false);
-
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Projects" />

@@ -68,14 +68,14 @@ export function Modal({
             {isDeleteModal ? (
               <>
                 <div className="flex gap-2 sm:justify-center">
+                  <Button type="button" variant="destructive" onClick={handleDelete}>
+                    Delete
+                  </Button>
                   <DialogClose asChild>
                     <Button type="button" variant="outline">
                       Close
                     </Button>
                   </DialogClose>
-                  <Button type="button" variant="destructive" onClick={handleDelete}>
-                    Delete
-                  </Button>
                 </div>
               </>
             ) : (
