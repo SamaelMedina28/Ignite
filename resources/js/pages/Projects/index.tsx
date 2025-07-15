@@ -1,10 +1,10 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head, useForm, Link, router } from '@inertiajs/react';
+import { Head, useForm, Link } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Eye, Trash } from 'lucide-react';
 import { Modal } from '@/components/ui/modal';
-import { useState, useRef } from 'react';
+// import { useState, useRef } from 'react';
 import {
   Table,
   TableBody,
@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/table"
 import { SearchInput } from '@/components/ui/search-input';
 import { Pagination } from '@/components/ui/pagination';
+import { useSearch } from '@/hooks/useSearch';
 const breadcrumbs: BreadcrumbItem[] = [
   {
     title: 'Projects',
@@ -44,15 +45,13 @@ export interface Project {
   image_path: string | File;
 }
 
-export default function Index({ projects, search: initialSearch }: {
-  projects: ProjectWithLinks,
-  search: string
+export default function Index({ projects }: {
+  projects: ProjectWithLinks
 }) {
   const { processing, delete: destroy, get: edit } = useForm();
+  const { search, handleSearch, handleClear } = useSearch('');
 
-  const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const [search, setSearch] = useState<string>(initialSearch || '');
 
   const handleDelete = (id: number) => {
     destroy(route('projects.destroy', id));
@@ -61,33 +60,7 @@ export default function Index({ projects, search: initialSearch }: {
     edit(route('projects.edit', id));
   };
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearch(value);
 
-    // Debounce para evitar muchas request
-    if (debounceTimeoutRef.current) {
-      clearTimeout(debounceTimeoutRef.current);
-    }
-
-    // Establece un nuevo timer
-    debounceTimeoutRef.current = setTimeout(() => {
-      console.log('Realizando petición al servidor con:', value); // Para depuración
-      router.get(route('projects.index'), { search: value }, {
-        preserveState: true,
-        preserveScroll: true
-      });
-    }, 300);
-  };
-
-  const handleClear = () => {
-    if (search === '') return;
-    setSearch('');
-    router.get(route('projects.index'), {}, {
-      preserveState: true,
-      preserveScroll: true
-    });
-  };
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
