@@ -1,9 +1,10 @@
 import { Input } from "./input";
-import { Search } from "lucide-react";
+import { Search, X } from "lucide-react";
+import { Button } from "./button";
 
-export const SearchInput = ({ search, handleSearch }: { search: string, handleSearch: (e: React.ChangeEvent<HTMLInputElement>) => void }) => {
+export const SearchInput = ({ search, handleSearch, handleClear }: { search: string, handleSearch: (e: React.ChangeEvent<HTMLInputElement>) => void, handleClear: () => void }) => {
   return (
-    <div>
+    <div className="flex gap-2">
       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
         <Search className="h-5 w-5 text-gray-400" />
       </div>
@@ -14,6 +15,9 @@ export const SearchInput = ({ search, handleSearch }: { search: string, handleSe
         value={search}
         onChange={handleSearch}
       />
+      <Button variant="secondary" onClick={handleClear} disabled={search === ''}>
+        <X className="h-5 w-5" />
+      </Button>
     </div>
   )
 }

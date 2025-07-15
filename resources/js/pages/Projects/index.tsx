@@ -80,6 +80,15 @@ export default function Index({ projects, search: initialSearch }: {
     }, 300); 
   };
 
+  const handleClear = () => {
+    if (search === '') return;
+    setSearch('');
+    router.get(route('projects.index'), {}, {
+      preserveState: true,
+      preserveScroll: true
+    });
+  };
+
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Projects" />
@@ -90,7 +99,7 @@ export default function Index({ projects, search: initialSearch }: {
       </div>
       <main className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
         <div className="relative w-full max-w-md">
-          <SearchInput search={search} handleSearch={handleSearch} />
+          <SearchInput search={search} handleSearch={handleSearch} handleClear={handleClear} />
         </div>
         <Table className="text-base">
           <TableCaption>Projects List</TableCaption>
