@@ -24,6 +24,7 @@ class ProjectController extends Controller
                     ->orWhere('client', 'like', "%{$search}%")
                     ->orWhere('type', 'like', "%{$search}%");
             })
+            ->orderBy('name', 'desc')
             ->paginate(7)
             ->withQueryString(); // Mantiene los parámetros de búsqueda en la paginación
 
