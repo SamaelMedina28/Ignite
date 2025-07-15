@@ -190,7 +190,7 @@ export default function Edit({ project }: Props) {
                       <img
                         src={preview || currentImage || ''}
                         alt="Project preview"
-                        className="max-w-64 max-h-64 object-cover rounded-lg"
+                        className="max-w-32 max-h-32 object-cover rounded-lg"
                       />
                       {preview && (
                         <p className="text-sm text-gray-600 mt-1">

@@ -137,7 +137,7 @@ export default function Create() {
                     onChange={handleFileChange}
                     className={errors.image_path ? 'border-red-500' : ''}
                   />
-                  {preview && <img src={preview} alt="Preview" className="max-w-64 max-h-64 object-cover rounded-lg" />}
+                  {preview && <img src={preview} alt="Preview" className="max-w-32 max-h-32 object-cover rounded-lg" />}
                   {errors.image_path && <InputError message={errors.image_path} />}
                 </div>
 

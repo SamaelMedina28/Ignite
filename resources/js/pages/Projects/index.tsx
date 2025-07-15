@@ -130,7 +130,7 @@ export default function Index({ projects, search: initialSearch }: {
                       title={project.name}
                       description={project.description}
                     >
-                      <div className="space-y-4">
+                      <div className="space-y-4 aspect-video">
                         <div className="flex gap-2 justify-between items-center">
                           <p>{project.client}</p>
                           <h2 className="text-sm bg-blue-500/20 border border-blue-400 text-blue-500 dark:bg-blue-500/20 dark:text-blue-300 px-2 py-1 rounded-full">{project.type[0].toUpperCase() + project.type.slice(1)}</h2>
@@ -149,12 +149,12 @@ export default function Index({ projects, search: initialSearch }: {
                       title="Delete Project"
                       description="Are you sure you want to delete this project?"
                     >
-                      <div>
+                      <div className='aspect-video'>
                         <div className="flex gap-2 justify-between items-center">
                           <h2 className="text-sm px-2 py-1">{project.name}</h2>
                           <p className="text-sm text-gray-500 px-2 py-1">{project.client}</p>
                         </div>
-                        <img src={`storage/${project.image_path}`} alt="" className="w-full h-32 object-cover rounded" />
+                        <img src={`storage/${project.image_path}`} alt="" className="w-full max-h-64 object-cover rounded-lg" />
                       </div>
                     </Modal>
                   </TableCell>
