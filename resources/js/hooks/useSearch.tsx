@@ -6,8 +6,6 @@ export const useSearch = (initialSearch: string) => {
   const [search, setSearch] = React.useState(initialSearch);
   const debounceTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
-
-
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearch(value);
@@ -27,6 +25,7 @@ export const useSearch = (initialSearch: string) => {
     }, 370);
   };
 
+  // Si hay algo en la propiedad search se limpia el estado de search y se hace una peticion al metodo index para mostrar todos los proyectos
   const handleClear = () => {
     if (search === '') return;
     setSearch('');

@@ -45,10 +45,17 @@ export interface Project {
   image_path: string | File;
 }
 
-export default function Index({ projects }: {
-  projects: ProjectWithLinks
-}) {
+export default function Index({ projects }: {projects: ProjectWithLinks}) {
+  // hook para manejar el formulario
   const { processing, delete: destroy, get: edit } = useForm();
+  // hook para manejar la busqueda
+  /* 
+  {
+    search: variable que almacena el valor de la busqueda,
+    handleSearch: funcion que maneja el evento para realizar al bsuqueda,
+    handleClear: funcion que maneja el evento de limpiar la busqueda,
+  }
+  */
   const { search, handleSearch, handleClear } = useSearch('');
 
 

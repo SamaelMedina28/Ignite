@@ -2,7 +2,13 @@ import { Input } from "./input";
 import { Search, X } from "lucide-react";
 import { Button } from "./button";
 
-export const SearchInput = ({ search, handleSearch, handleClear }: { search: string, handleSearch: (e: React.ChangeEvent<HTMLInputElement>) => void, handleClear: () => void }) => {
+interface SearchInputProps {
+  search: string;
+  handleSearch: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleClear: () => void;
+}
+
+export const SearchInput = ({ search, handleSearch, handleClear }: SearchInputProps) => {
   return (
     <div className="flex gap-2">
       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -13,9 +19,9 @@ export const SearchInput = ({ search, handleSearch, handleClear }: { search: str
         placeholder="Search projects..."
         className="pl-10"
         value={search}
-        onChange={handleSearch}
+        onChange={(e) => handleSearch(e)}
       />
-      <Button variant="secondary" onClick={handleClear} disabled={search === ''}>
+      <Button variant="secondary" onClick={() => handleClear()} disabled={search === ''}>
         <X className="h-5 w-5" />
       </Button>
     </div>
