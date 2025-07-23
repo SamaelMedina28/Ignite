@@ -18,7 +18,7 @@ export const SearchInput = ({ search, handleSearch, handleClear }: SearchInputPr
         type="text"
         placeholder="Search projects..."
         className="pl-10"
-        value={search}
+        value={search || ''}
         onChange={(e) => handleSearch(e)}
       />
       <Button variant="secondary" onClick={() => handleClear()} disabled={search === ''}>

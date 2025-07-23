@@ -16,7 +16,7 @@ class ProjectController extends Controller
      */
     public function index(Request $request)
     {
-        $searchQuery = $request->search;
+        $searchQuery = $request->search ?? '';
 
         $projects = Project::query()
             ->when($searchQuery, function ($query) use ($searchQuery) {
