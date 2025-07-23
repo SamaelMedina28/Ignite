@@ -17,6 +17,7 @@ import {
 import { SearchInput } from '@/components/ui/search-input';
 import { Pagination } from '@/components/ui/pagination';
 import { useSearch } from '@/hooks/useSearch';
+import { toast } from 'sonner';
 const breadcrumbs: BreadcrumbItem[] = [
   {
     title: 'Projects',
@@ -59,9 +60,13 @@ export default function Index({ projects }: {projects: ProjectWithLinks}) {
   const { search, handleSearch, handleClear } = useSearch('');
 
 
-
   const handleDelete = (id: number) => {
     destroy(route('projects.destroy', id));
+    setTimeout(() => {
+      toast("Successfully!", {
+        description: "Project deleted successfully!",
+      })
+    }, 600);
   };
   const handleEdit = (id: number) => {
     edit(route('projects.edit', id));
