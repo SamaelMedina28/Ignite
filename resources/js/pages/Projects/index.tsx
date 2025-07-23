@@ -46,7 +46,7 @@ export interface Project {
   image_path: string | File;
 }
 
-export default function Index({ projects }: {projects: ProjectWithLinks}) {
+export default function Index({ projects, searchQuery }: {projects: ProjectWithLinks, searchQuery: string}) {
   // hook para manejar el formulario
   const { processing, delete: destroy, get: edit } = useForm();
   // hook para manejar la busqueda
@@ -57,7 +57,7 @@ export default function Index({ projects }: {projects: ProjectWithLinks}) {
     handleClear: funcion que maneja el evento de limpiar la busqueda,
   }
   */
-  const { search, handleSearch, handleClear } = useSearch('');
+  const { search, handleSearch, handleClear } = useSearch(searchQuery);
 
 
   const handleDelete = (id: number) => {

@@ -16,19 +16,19 @@ class ProjectController extends Controller
      */
     public function index(Request $request)
     {
-        $search = $request->search;
+        $searchQuery = $request->search;
 
         $projects = Project::query()
-            ->when($search, function ($query) use ($search) {
-                return $query->where('name', 'like', "%{$search}%")
-                    ->orWhere('client', 'like', "%{$search}%")
-                    ->orWhere('type', 'like', "%{$search}%");
+            ->when($searchQuery, function ($query) use ($searchQuery) {
+                return $query->where('name', 'like', "%{$searchQuery}%")
+                    ->orWhere('client', 'like', "%{$searchQuery}%")
+                    ->orWhere('type', 'like', "%{$searchQuery}%");
             })
             ->orderByDesc('id')
             ->paginate(7)
             ->withQueryString(); // Mantiene los parámetros de búsqueda en la paginación
 
-        return inertia('Projects/index', compact('projects', 'search'));
+        return inertia('Projects/index', compact('projects', 'searchQuery'));
     }
 
     /**
